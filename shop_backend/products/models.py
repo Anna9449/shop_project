@@ -11,12 +11,11 @@ from users.models import ShopUser as User
 
 
 class CategoryModel(models.Model):
-    name = models.TextField('Наименование категории',
+    name = models.TextField('Наименование',
                             max_length=MAX_LENGTH_NAME)
     slug = models.SlugField('Слаг',
                             max_length=MAX_LENGTH_SLUG, unique=True)
-    image = models.ImageField('Изображение категории',
-                              default='default/no_image.jpg')
+    image = models.ImageField('Изображение')
 
     class Meta:
         abstract = True
@@ -78,12 +77,9 @@ class ImageProduct(models.Model):
         related_name='images',
         verbose_name='Продукт'
     )
-    image = models.ImageField('Изображение продукта',
-                              default='default/no_image.jpg')
-    image_small = models.ImageField('Изображение продукта s',
-                                    default='default/no_image_small.jpg')
-    image_medium = models.ImageField('Изображение продукта m',
-                                     default='default/no_image_medium.jpg')
+    image = models.ImageField('Изображение продукта')
+    image_small = models.ImageField('Изображение продукта s')
+    image_medium = models.ImageField('Изображение продукта m')
 
     class Meta:
         verbose_name = 'Изображение'
@@ -100,13 +96,12 @@ class ImageProduct(models.Model):
         return File(t_io, name=self.image.name)
 
     def save(self, *args, **kwargs):
-        if self.image.name != 'default/no_image.jpg':
-            self.image_small = self.create_image_small_or_medium(
-                size=SIZE_SMALL_IMG
-            )
-            self.image_medium = self.create_image_small_or_medium(
-                size=SIZE_MEDIUM_IMG
-            )
+        self.image_small = self.create_image_small_or_medium(
+            size=SIZE_SMALL_IMG
+        )
+        self.image_medium = self.create_image_small_or_medium(
+            size=SIZE_MEDIUM_IMG
+        )
         super().save(*args, **kwargs)
 
 
